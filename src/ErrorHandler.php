@@ -39,25 +39,16 @@ Class ErrorHandler {
         return null;
     }
 
-    public function getServerIp(){
-        if($this->error() && isset($this->api->getResponse()->server_ip)){
-            return $this->api->getResponse()->server_ip;
-        }
-        return null;
+    public function getClientIp(){
+        return isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;
     }
 
-    public function getServerName(){
-        if($this->error() && isset($this->api->getResponse()->server_name)){
-            return $this->api->getResponse()->server_name;
-        }
-        return null;
+    public function getClientName(){
+        return isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : null;
     }
 
-    public function getServerScript(){
-        if($this->error() && isset($this->api->getResponse()->server_script)){
-            return $this->api->getResponse()->server_script;
-        }
-        return null;
+    public function getClientScript(){
+        return isset($_SERVER['SCRIPT_FILENAME']) ? $_SERVER['SCRIPT_FILENAME'] : null;
     }
 
     public function getArgs(){
@@ -80,9 +71,9 @@ Class ErrorHandler {
                     'file'              => $this->getFile(),
                     'line'              => $this->getLine(),
                     'args'              => $this->getArgs(),
-                    'server_ip'         => $this->getServerIp(),
-                    'server_name'       => $this->getServerName(),
-                    'server_script'     => $this->getServerScript(),
+                    'client_ip'         => $this->getClientIp(),
+                    'client_name'       => $this->getClientName(),
+                    'client_script'     => $this->getClientScript(),
                 ]
             ];
             $response = json_encode($response, JSON_FORCE_OBJECT|JSON_PRETTY_PRINT);
@@ -104,9 +95,6 @@ Class ErrorHandler {
             'info'              => $e->getMessage(),
             'file'              => $e->getFile(),
             'line'              => $e->getLine(),
-            'server_ip'         => isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null,
-            'server_name'       => isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : null,
-            'server_script'     => isset($_SERVER['SCRIPT_FILENAME']) ? $_SERVER['SCRIPT_FILENAME'] : null,
             'error'             => true,
         ];
         $response = json_encode($response, JSON_FORCE_OBJECT|JSON_PRETTY_PRINT);
