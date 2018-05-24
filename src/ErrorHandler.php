@@ -39,11 +39,32 @@ Class ErrorHandler {
         return null;
     }
 
+    public function getServerIp(){
+        if($this->error() && isset($this->api->getResponse()->server_ip)){
+            return $this->api->getResponse()->server_ip;
+        }
+        return null;
+    }
+
+    public function getServerName(){
+        if($this->error() && isset($this->api->getResponse()->server_name)){
+            return $this->api->getResponse()->server_name;
+        }
+        return null;
+    }
+
+    public function getServerScript(){
+        if($this->error() && isset($this->api->getResponse()->server_script)){
+            return $this->api->getResponse()->server_script;
+        }
+        return null;
+    }
+
     public function getArgs(){
         if($this->error() && isset($this->api->getResponse()->args)){
             return $this->api->getResponse()->args;
         }
-        return false;
+        return null;
     }
 
     public function debug(){
@@ -54,10 +75,14 @@ Class ErrorHandler {
                     'method'            => $this->api->getMethod(),
                     'query'             => $this->api->getQuery(),
                     'header'            => $this->api->getHeader(),
+                    'error'             => $this->error(),
                     'message'           => $this->getMessage(),
                     'file'              => $this->getFile(),
                     'line'              => $this->getLine(),
                     'args'              => $this->getArgs(),
+                    'server_ip'         => $this->getServerIp(),
+                    'server_name'       => $this->getServerName(),
+                    'server_script'     => $this->getServerScript(),
                 ]
             ];
             $response = json_encode($response, JSON_FORCE_OBJECT|JSON_PRETTY_PRINT);
@@ -68,7 +93,6 @@ Class ErrorHandler {
     }
 
     public function statusCodeHandling($e){
-
         if($e->getResponse()) {
             $response = json_decode($e->getResponse()->getBody(true)->getContents());
             if(isset($response->error)) {
@@ -77,10 +101,13 @@ Class ErrorHandler {
         }
         //HERE API_URL CANNOT BE REACH
         $response = [
-            'info'      => $e->getMessage(),
-            'file'      => $e->getFile(),
-            'line'      => $e->getLine(),
-            'error'     => true
+            'info'              => $e->getMessage(),
+            'file'              => $e->getFile(),
+            'line'              => $e->getLine(),
+            'server_ip'         => isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null,
+            'server_name'       => isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : null,
+            'server_script'     => isset($_SERVER['SCRIPT_FILENAME']) ? $_SERVER['SCRIPT_FILENAME'] : null,
+            'error'             => true,
         ];
         $response = json_encode($response, JSON_FORCE_OBJECT|JSON_PRETTY_PRINT);
         $response = json_decode($response, false);
