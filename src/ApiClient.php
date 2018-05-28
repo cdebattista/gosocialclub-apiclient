@@ -6,7 +6,7 @@ use GuzzleHttp\Exception\RequestException;
 Class ApiClient {
 
     protected $client;
-    protected $basekey;
+    protected $base_key;
     protected $api_url;
     protected $url;
     protected $method;
@@ -29,7 +29,7 @@ Class ApiClient {
         $this->error            = new ErrorHandler($this);
         $this->logger           = new Logger($this);
 
-        $this->basekey          = array_key_exists('basekey', $options) ? $options['basekey'] : null;
+        $this->base_key          = array_key_exists('base_key', $options) ? $options['base_key'] : null;
         $this->api_url          = array_key_exists('api_url', $options) ? $options['api_url'] : 'http://gosocialclub.com';
         $this->log_error        = array_key_exists('log_error', $options) ? $options['log_error'] : true;
         $this->path_log_error   = array_key_exists('path_log_error', $options) ? $options['path_log_error'] : null;
@@ -65,8 +65,8 @@ Class ApiClient {
         return $this->response;
     }
 
-    public function setBaseKey($basekey){
-        $this->basekey = $basekey;
+    public function setBaseKey($base_key){
+        $this->base_key = $base_key;
     }
 
     public function setApiUrl($api_url){
@@ -92,7 +92,7 @@ Class ApiClient {
     public function call($method, $request, $query = []){
         try {
             $this->url      = $this->api_url . $request;
-            $this->query    = array_merge(['baseKey' => $this->basekey], $query);
+            $this->query    = array_merge(['base_key' => $this->base_key], $query);
             $this->method   = $method;
             $this->header   = [
                 'Accept'            => 'application/x-www-form-urlencoded',
